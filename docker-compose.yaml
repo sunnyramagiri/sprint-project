@@ -1,0 +1,43 @@
+services:
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - "7070:5432"
+    environment:
+      POSTGRES_USER: sunny
+      POSTGRES_PASSWORD: sunny@123
+      POSTGRES_DB: sunnydb
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    depends_on:
+      - db
+
+  tomcat:
+    image: tomcat:latest
+    container_name: tomcat
+    restart: always
+    ports:
+      - "30001:8080"
+
+  nodeapp:
+    build: .
+    container_name: sunny-node
+    restart: always
+    ports:
+      - "30000:30000"
+
+volumes:
+  postgres_data:
