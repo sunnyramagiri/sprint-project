@@ -1,0 +1,11 @@
+{
+  "name": "sprint-project",
+  "version": "1.0.0",
+  "description": "Node.js application for Jenkins Docker pipeline",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
