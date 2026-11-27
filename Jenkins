@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Git Download') {
+            steps {
+                echo 'Downloading code from GitHub'
+                git branch: 'main',
+                    url: 'https://github.com/sunnyramagiri/sprint-project.git'
+            }
+        }
+
+        stage('Maven Install') {
+            steps {
+                echo 'Building application using Maven'
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                echo 'Login to Docker Hub'
+
+                withCredentials([string(credentialsId: 'sunnyramagiri', variable: 'DOCKER_TOKEN')]) {
+                    sh '''
+                        echo "$DOCKER_TOKEN" | docker login -u sunnyramagiri --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                echo 'Building Docker image'
+
+                sh '''
+                    docker build -t sunnyramagiri/sprint-project:latest .
+                '''
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                echo 'Pushing image to Docker Hub'
+
+                sh '''
+                    docker push sunnyramagiri/sprint-project:latest
+                '''
+            }
+        }
+
+        stage('Docker Deploy') {
+            steps {
+                echo 'Deploying application container'
+
+                sh '''
+                    docker rm -f sprint-app || true
+
+                    docker run -d --name sprint-app --restart always -p 3000:3000 sunnyramagiri/sprint-project:latest
+
+                    docker ps
+                '''
+            }
+        }
+
+        stage('Docker Logout') {
+            steps {
+                sh 'docker logout'
+            }
+        }
+    }
+}
