@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
                 <h1>🚀 CI/CD Pipeline Successful!</h1>
                 <p class="success">Application is running successfully.</p>
                 <p>GitHub → Jenkins → Maven → Docker → Docker Hub → EC2</p>
-                <p>Deployed using Jenkins CI/CD pipeline.</p>
+                <p>Deployed using Jenkins CI pipeline.</p>
             </div>
         </body>
         </html>
